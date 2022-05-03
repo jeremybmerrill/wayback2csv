@@ -1,0 +1,3 @@
+../waybackpack
+beautifulsoup4
+tqdm
