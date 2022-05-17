@@ -35,11 +35,12 @@ class WaybackRucksack:
             session=session
         )
 
-    def download(self):
+    def download(self, ignore_errors=True):
         self.pack.download_to(
             self.dir,
             no_clobber=True,
-            use_tqdm=True
+            use_tqdm=True,
+            ignore_errors=ignore_errors
         )
         # self.download_live_site()
 

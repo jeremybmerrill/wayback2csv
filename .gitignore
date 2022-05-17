@@ -1,10 +1,13 @@
 *.csv
 .DS_Store
 .ipynb_checkpoints/
-.waybackrucksack/
+.wayback2csv/
 followers over time.ipynb
-waybackrucksack.code-workspace
+wayback2csv.code-workspace
 gettr_followers_over_time.py
 twitter_followers_over_time.py
+gab_followers_over_time.py
 *.pyc
 __pycache__/
+data/
+*.ipynb
