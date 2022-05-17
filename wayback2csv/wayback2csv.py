@@ -11,9 +11,9 @@ from bs4 import BeautifulSoup
 import waybackpack
 import requests
 
-DEFAULT_PARENT_DIR = ".waybackrucksack/"
+DEFAULT_PARENT_DIR = ".wayback2csv/"
 DEFAULT_COLLAPSE = "timestamp:8" # daily
-class WaybackRucksack:
+class Wayback2Csv:
 
     def __init__(self, user_agent, url, from_date=None, to_date=None, collapse=DEFAULT_COLLAPSE, dir=DEFAULT_PARENT_DIR):
         session = waybackpack.Session(user_agent=user_agent)
