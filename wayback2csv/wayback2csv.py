@@ -152,7 +152,7 @@ class Wayback2Csv:
             writer = csv.writer(outf)
             writer.writerow(["path", "date", "value"] +
                             [f"extra{n+1}" for n, _ in enumerate(extra_row_values)])
-            for row in self.values:
+            for row in sorted(self.values, key=itemgetter(1)):
                 writer.writerow(row + extra_row_values)
 
 
