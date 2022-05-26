@@ -15,7 +15,7 @@ username = argv[1]
 w2c = Wayback2Csv("waybackpack wayback2csv@example.com", f"twitter.com/{username}", from_date="2022")
 w2c.download()
 w2c.parse_html(".ProfileNav-item--followers .ProfileNav-value", lambda x: x.get("data-count") if x.get("data-count") else "None")
-wbrs.parse_html("script[data-rh=true]", lambda x:[i for i in json.loads(x.text)["author"]["interactionStatistic"] if i["name"] == "Follows"][0]['userInteractionCount'])
+w2c.parse_html("script[data-rh=true]", lambda x:[i for i in json.loads(x.text)["author"]["interactionStatistic"] if i["name"] == "Follows"][0]['userInteractionCount'])
 
 w2c.to_csv(f"data/{username}_twitter_followers_over_time.csv", [username])
 ```
