@@ -1,3 +1,4 @@
+from operator import itemgetter
 import os
 from glob import glob
 from datetime import datetime
@@ -38,6 +39,7 @@ class Wayback2Csv:
             timestamps=timestamps,
             session=session
         )
+        self.values = []
 
     def download(self, ignore_errors=True):
         self.pack.download_to(
@@ -88,7 +90,6 @@ class Wayback2Csv:
 
     def parse_html(self, css_selector, number_lambda=None):
         path_head, path_tail = os.path.split(self.pack.parsed_url.path)
-        self.values = []
         for fn in tqdm(glob(os.path.join(
             self.dir,
             "*",
@@ -106,14 +107,16 @@ class Wayback2Csv:
                 soup = BeautifulSoup(html_doc, 'html.parser')
                 followers_values = soup.select(css_selector)
                 if not followers_values:
-                    print("no followers_value", fn)
+                    logger.warn(
+                        "couldn't find any elements matching %s in %s", css_selector, fn)
                     continue
                 followers = number_lambda(
                     followers_values[0]) if number_lambda else followers_values[0]
                 try:
                     count = int(followers)
                 except ValueError as e:
-                    print("int problems", fn, e)
+                    logger.warn(
+                        "couldn't parse an int from %s in %s", followers, fn)
                     continue
                 raw_date = fn.split("/")[1]
                 scrape_date = datetime.strptime(raw_date[:8], "%Y%m%d")
@@ -121,7 +124,6 @@ class Wayback2Csv:
 
     def parse_json(self, path, number_lambda=None):
         path_head, path_tail = os.path.split(self.pack.parsed_url.path)
-        self.values = []
         for fn in tqdm(glob(os.path.join(
             self.dir,
             "*",
@@ -139,7 +141,7 @@ class Wayback2Csv:
                 try:
                     data = json.loads(json_doc)
                 except json.decoder.JSONDecodeError:
-                    print("JSON decode error {}".format(fn))
+                    logger.error("JSON decode error {}".format(fn))
                     continue
                 count = drill_down_nested_dict(data, path)
                 count = number_lambda(count) if number_lambda else count
