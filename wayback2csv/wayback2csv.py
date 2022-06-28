@@ -99,7 +99,7 @@ class Wayback2Csv:
         ))):
             if os.path.isdir(fn):
                 continue
-            with open(fn, 'r') as f:
+            with open(fn, 'r', errors="ignore") as f:
                 try:
                     html_doc = f.read()
                 except UnicodeDecodeError:
