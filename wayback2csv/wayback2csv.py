@@ -50,6 +50,24 @@ class Wayback2Csv:
         )
         # self.download_live_site()
 
+    def pack_files(self):
+        for asset in self.pack.assets:
+            # copy pasted from waybackpack/asset.py
+            path_head, path_tail = os.path.split(self.pack.parsed_url.path)
+            if path_tail == "":
+                path_tail = "index.html"
+
+            filedir = os.path.join(
+                self.dir,
+                asset.timestamp,
+                self.pack.parsed_url.netloc,
+                path_head.lstrip("/")
+            )
+
+            fn = os.path.join(filedir, path_tail)
+            if os.path.exists(fn):
+                yield fn
+
     def download_live_site(self, ignore_errors=True):
         path_head, path_tail = os.path.split(self.pack.parsed_url.path)
         timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
@@ -89,16 +107,7 @@ class Wayback2Csv:
             f.write(content)
 
     def parse_html(self, css_selector, number_lambda=None):
-        path_head, path_tail = os.path.split(self.pack.parsed_url.path)
-        for fn in tqdm(glob(os.path.join(
-            self.dir,
-            "*",
-            self.pack.parsed_url.netloc,
-            path_head.lstrip("/"),
-            path_tail
-        ))):
-            if os.path.isdir(fn):
-                continue
+        for asset in self.pack_files():
             with open(fn, 'r', errors="ignore") as f:
                 try:
                     html_doc = f.read()
@@ -123,16 +132,7 @@ class Wayback2Csv:
                 self.values.append([fn, scrape_date, count])
 
     def parse_json(self, path, number_lambda=None):
-        path_head, path_tail = os.path.split(self.pack.parsed_url.path)
-        for fn in tqdm(glob(os.path.join(
-            self.dir,
-            "*",
-            self.pack.parsed_url.netloc,
-            path_head.lstrip("/"),
-            path_tail
-        ))):
-            if os.path.isdir(fn):
-                continue
+        for fn in self.pack_files():
             with open(fn, 'r') as f:
                 try:
                     json_doc = f.read()
