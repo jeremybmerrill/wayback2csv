@@ -107,7 +107,7 @@ class Wayback2Csv:
             f.write(content)
 
     def parse_html(self, css_selector, number_lambda=None):
-        for asset in self.pack_files():
+        for fn in self.pack_files():
             with open(fn, 'r', errors="ignore") as f:
                 try:
                     html_doc = f.read()
