@@ -8,7 +8,7 @@ setup(name='wayback2csv',
       url='https://www.github.com/jeremybmerrill/wayback2csv/',
       packages=['wayback2csv'],
       install_requires=[
-          'waybackpack',
+          'waybackpack>=0.4',
           'beautifulsoup4',
           'tqdm'
       ],

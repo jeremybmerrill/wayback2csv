@@ -9,7 +9,6 @@ import logging
 import requests
 import waybackpack
 from bs4 import BeautifulSoup
-from tqdm.auto import tqdm
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +44,7 @@ class Wayback2Csv:
         self.pack.download_to(
             self.dir,
             no_clobber=True,
-            use_tqdm=True,
+            progress=True,
             ignore_errors=ignore_errors
         )
         # self.download_live_site()
