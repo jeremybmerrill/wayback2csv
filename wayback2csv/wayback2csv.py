@@ -47,7 +47,6 @@ class Wayback2Csv:
             progress=True,
             ignore_errors=ignore_errors
         )
-        # self.download_live_site()
 
     def pack_files(self):
         for asset in self.pack.assets:
@@ -66,44 +65,6 @@ class Wayback2Csv:
             fn = os.path.join(filedir, path_tail)
             if os.path.exists(fn):
                 yield fn
-
-    def download_live_site(self, ignore_errors=True):
-        path_head, path_tail = os.path.split(self.pack.parsed_url.path)
-        timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
-        filedir = os.path.join(
-            self.dir,
-            timestamp,
-            self.pack.parsed_url.netloc,
-            path_head.lstrip("/")
-        )
-        filepath = os.path.join(filedir, path_tail)
-        logger.info(
-            "Fetching {0} @ {1}".format(
-                self.pack.url,
-                timestamp)
-        )
-
-        try:
-            content = requests.get('https://' + self.pack.url).content
-        except Exception as e:
-            if ignore_errors == True:
-                ex_name = ".".join([e.__module__, e.__class__.__name__])
-                logger.warn("ERROR -- {0} @ {1} -- {2}: {3}".format(
-                    self.pack.url,
-                    timestamp,
-                    ex_name,
-                    e
-                ))
-                return
-            else:
-                raise
-        try:
-            os.makedirs(filedir)
-        except OSError:
-            pass
-        with open(filepath, "wb") as f:
-            logger.info("Writing to {0}\n".format(filepath))
-            f.write(content)
 
     def parse_html(self, css_selector, number_lambda=None):
         for fn in self.pack_files():
