@@ -82,10 +82,10 @@ class Wayback2Csv:
                 followers = number_lambda(
                     followers_values[0]) if number_lambda else followers_values[0]
                 try:
-                    count = int(followers)
+                    count = float(followers)
                 except ValueError as e:
                     logger.warn(
-                        "couldn't parse an int from %s in %s", followers, fn)
+                        "couldn't parse a float from %s in %s", followers, fn)
                     continue
                 raw_date = fn.split("/")[1]
                 scrape_date = datetime.strptime(raw_date[:8], "%Y%m%d")
