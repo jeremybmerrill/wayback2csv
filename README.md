@@ -32,3 +32,9 @@ w2c.parse_html(".ProfileNav-item--followers .ProfileNav-value", lambda x: x.get(
 w2c.parse_html("script[data-rh=true]", lambda x:[i for i in json.loads(x.text)["author"]["interactionStatistic"] if i["name"] == "Follows"][0]['userInteractionCount']) # just call it twice!
 w2c.to_csv(f"data/{username}_twitter_followers_over_time.csv", [username])
 ```
+
+## Install instructions
+
+1. git clone the repo and cd into the dir
+2. `pip install -e .`
+3. go to town!
