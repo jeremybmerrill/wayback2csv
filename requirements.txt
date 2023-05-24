@@ -1,3 +1,4 @@
 waybackpack>=0.4
 beautifulsoup4
 tqdm
+lxml

@@ -9,7 +9,8 @@ import logging
 import requests
 import waybackpack
 from bs4 import BeautifulSoup
-
+from lxml import html
+from lxml.etree import ParserError as LxmlParserError
 logger = logging.getLogger(__name__)
 
 
@@ -66,6 +67,35 @@ class Wayback2Csv:
             if os.path.exists(fn):
                 yield fn
 
+    def parse_html_xpath(self, xpath_selector, number_lambda=None):
+        for fn in self.pack_files():
+            with open(fn, 'r', errors="ignore") as f:
+                try:
+                    html_doc = f.read()
+                except UnicodeDecodeError:
+                    continue
+                try: 
+                    tree = html.fromstring(html_doc)
+                except LxmlParserError:
+                    continue
+                followers_values = tree.xpath(xpath_selector)
+                
+                if not followers_values:
+                    logger.warn(
+                        "couldn't find any elements matching %s in %s", xpath_selector, fn)
+                    continue
+                followers = number_lambda(
+                    followers_values[0]) if number_lambda else followers_values[0]
+                try:
+                    count = float(followers)
+                except ValueError as e:
+                    logger.warn(
+                        "couldn't parse a float from %s in %s", followers, fn)
+                    continue
+                raw_date = fn.split("/")[1]
+                scrape_date = datetime.strptime(raw_date[:8], "%Y%m%d")
+                self.values.append([fn, scrape_date, count])
+
     def parse_html(self, css_selector, number_lambda=None):
         for fn in self.pack_files():
             with open(fn, 'r', errors="ignore") as f:
@@ -74,6 +104,7 @@ class Wayback2Csv:
                 except UnicodeDecodeError:
                     continue
                 soup = BeautifulSoup(html_doc, 'html.parser')
+                
                 followers_values = soup.select(css_selector)
                 if not followers_values:
                     logger.warn(
